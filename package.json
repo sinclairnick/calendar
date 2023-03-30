@@ -11,9 +11,11 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "check": "turbo run check",
+    "publish": "turbo run build --filter \"./packages/*\" && pnpm publish -r --filter \"./packages/*\" --access=public",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.1",
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
     "turbo": "latest"
@@ -21,6 +23,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.26.0"
 }
