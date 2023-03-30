@@ -1,6 +1,6 @@
 {
   "name": "@calend/react",
-  "version": "1.0.1-beta.5",
+  "version": "1.0.1-beta.6",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,11 +30,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "@calend/date-adapter": "workspace:*"
+  },
   "dependencies": {
-    "@calend/date-adapter": "workspace:*",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@calend/date-adapter": "workspace:*",
     "@swc/core": "^1.3.32",
     "@swc/jest": "^0.2.24",
     "@types/jest": "^29.4.0",

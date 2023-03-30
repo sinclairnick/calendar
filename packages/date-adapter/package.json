@@ -1,6 +1,6 @@
 {
   "name": "@calend/date-adapter",
-  "version": "1.0.1-beta.3",
+  "version": "1.0.1-beta.4",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -31,8 +31,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "optionalDependencies": {
+    "dayjs": "^1.0.0"
+  },
   "devDependencies": {
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.0.0",
     "tsup": "^6.7.0",
     "typescript": "^5.0.2"
   }
