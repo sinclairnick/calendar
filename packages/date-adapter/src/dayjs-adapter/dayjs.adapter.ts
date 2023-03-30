@@ -1,11 +1,11 @@
-import _dayjs from "dayjs";
+import type _dayjs from "dayjs";
 import { DateAdapter } from "../types/date-adapter.interface";
-import localeData from "dayjs/plugin/localeData";
-import weekday from "dayjs/plugin/weekday";
-import minMax from "dayjs/plugin/minMax";
-import isBetween from "dayjs/plugin/isBetween";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import localeData from "dayjs/plugin/localeData.js";
+import weekday from "dayjs/plugin/weekday.js";
+import minMax from "dayjs/plugin/minMax.js";
+import isBetween from "dayjs/plugin/isBetween.js";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter.js";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore.js";
 
 export const createDayjsAdapter = (dayjs: typeof _dayjs): DateAdapter => {
   dayjs.extend(localeData);
