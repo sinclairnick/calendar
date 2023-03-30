@@ -23,6 +23,10 @@ export const createDayjsAdapter = (dayjs: typeof _dayjs): DateAdapter => {
     return dayjs(date).startOf("month").toDate();
   };
 
+  const getMonthEnd: DateAdapter["getMonthStart"] = (date) => {
+    return dayjs(date).endOf("month").toDate();
+  };
+
   const getMonth: DateAdapter["getMonth"] = (date) => {
     const _date = dayjs(date);
     const firstCell = _date.startOf("week");
@@ -97,6 +101,7 @@ export const createDayjsAdapter = (dayjs: typeof _dayjs): DateAdapter => {
     boundDuration,
     getMonth,
     getMonthStart,
+    getMonthEnd,
     getWeekdays,
     isInRange,
     isBeforeDay,

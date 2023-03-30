@@ -16,6 +16,7 @@ export function useMonthCalendar(
   const [focusDate, setFocusDate] = useState(defaultStart);
 
   const monthStart = adapter.getMonthStart(focusDate);
+  const monthEnd = adapter.getMonthEnd(focusDate);
   const month = adapter.getMonth(monthStart);
   const weeks = splitMonthIntoWeeks(month);
 
@@ -74,6 +75,7 @@ export function useMonthCalendar(
     isWeekend,
     setDate,
     monthStart,
+    monthEnd,
     nextMonth,
     prevMonth,
     events,

@@ -18,6 +18,7 @@ export type MonthCalendarProps = {};
 export type UseMonthCalendarReturn = MonthCalendarProps & {
   weeks: SevenDays[];
   monthStart: Date;
+  monthEnd: Date;
   events: <T>(events: CalendarEventInput<T>[]) => GetEventSpansReturn<T> & {
     getBoundingBox: (span: MonthCalendarEventSpan<T>) => SpanBoundingBox;
     boxToWeekStyle: (box: SpanBoundingBox) => CSSProperties;

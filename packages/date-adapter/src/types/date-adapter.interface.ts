@@ -10,6 +10,11 @@ export interface DateAdapter {
   getMonthStart: (dateInMonth: Date) => Date;
 
   /**
+   * Get the lest date for the viewable month.
+   */
+  getMonthEnd: (dateInMonth: Date) => Date;
+
+  /**
    * Get a list of all dates in the viewable month.
    * This may include dates from the previous and next month.
    */
@@ -30,8 +35,8 @@ export interface DateAdapter {
   /** Diff days (including decimal part) */
   diffDays: (dateFrom: Date, dateTo: Date) => number;
 
-  addMonth: (date: Date, months?:number) => Date;
-  subtractMonth: (date: Date, months?:number) => Date;
+  addMonth: (date: Date, months?: number) => Date;
+  subtractMonth: (date: Date, months?: number) => Date;
 
   /**
    * Clips a duration to a given range.
