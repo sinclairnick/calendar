@@ -7,7 +7,7 @@ import {
   GetSpansForEventReturn,
   MonthCalendarEventSpan,
 } from "../events/month-events.types";
-import { groupBy } from "lodash";
+import { groupBy } from "lodash-es";
 
 export const getEventSpans = <T>(
   args: GetEventSpansArgs<T>

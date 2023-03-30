@@ -1,6 +1,5 @@
 import { MonthInWeeks, SevenDays } from "../..";
 import { MonthCalendarEventSpan } from "../events/month-events.types";
-import { UseMonthCalendarReturn } from "./month-calendar.types";
 
 export const splitMonthIntoWeeks = (days: Date[]): MonthInWeeks => {
   const weeks: Date[][] = [];

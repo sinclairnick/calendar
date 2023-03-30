@@ -1,4 +1,4 @@
-import type { DateAdapter } from "@calendar/date-adapter";
+import type { DateAdapter } from "@calend/date-adapter";
 import { CSSProperties } from "react";
 import { SevenDays } from "../../types";
 import { CalendarEventInput, SpanBoundingBox } from "../../types/event.types";

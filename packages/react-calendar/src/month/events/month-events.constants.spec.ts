@@ -1,7 +1,7 @@
 import * as Subject from "./month-events.constants";
 import dayjs from "dayjs";
 import { splitMonthIntoWeeks } from "../calendar/month-calendar.constants";
-import { createDayjsAdapter } from "@calendar/date-adapter/dayjs-adapter";
+import { createDayjsAdapter } from "@calend/date-adapter/dayjs-adapter";
 
 describe("Month events", () => {
   const adapter = createDayjsAdapter(dayjs);
