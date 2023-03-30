@@ -5,4 +5,7 @@ export default defineConfig({
     index: "src/index.ts",
     month: "src/month/index.ts",
   },
+  dts: true,
+  format: ["cjs", "esm"],
+  clean: true,
 });
