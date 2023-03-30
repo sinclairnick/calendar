@@ -1,5 +1,11 @@
 # @calendar/date-adapter
 
+## 1.0.1-beta.3
+
+### Patch Changes
+
+- Resolve jsx preservation bugs
+
 ## 1.0.1-beta.2
 
 ### Patch Changes

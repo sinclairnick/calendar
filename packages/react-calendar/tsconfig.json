@@ -6,6 +6,6 @@
     "lib": ["ESNext", "DOM"],
     "outDir": "./dist",
     "strict": true,
-    "jsx": "preserve"
+    "jsx": "react"
   }
 }
