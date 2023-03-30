@@ -7,9 +7,12 @@
     "@calendar/date-adapter": "1.0.0",
     "eslint-config-custom": "0.0.0",
     "@calendar/react": "1.0.0",
-    "tsconfig": "0.0.0"
+    "tsconfig": "0.0.0",
+    "@calend/date-adapter": "1.0.1-beta.0",
+    "@calend/react": "1.0.1-beta.0"
   },
   "changesets": [
-    "afraid-radios-doubt"
+    "afraid-radios-doubt",
+    "hot-needles-move"
   ]
 }
