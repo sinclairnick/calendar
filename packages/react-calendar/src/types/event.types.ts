@@ -1,8 +1,8 @@
-export type CalendarEventInput<T extends any = any> = {
+export interface CalendarEventInput<T = any> {
   start: Date;
   end: Date;
   data: T;
-};
+}
 
 export type CalendarEventSpanStart = {
   value: number;
@@ -21,20 +21,18 @@ export type CalendarEventSpanCoords = {
   start: CalendarEventSpanStart;
   /** The span's end index, along the main axis */
   end: CalendarEventSpanEnd;
-  /** The stacked index of a span. Used for overlapping events */
-  stackIndex: number;
   /** Total event span */
   totalSpan: number;
 };
 
-export type CalendarEventSpanBase<
-  T extends CalendarEventInput = CalendarEventInput
-> = {
-  index: number;
-  data: T;
+export type CalendarEventSpanBase<T = unknown> = {
+  eventIdx: number;
+  event: CalendarEventInput<T>;
 };
 
-export type CalendarEventSpanBoundingBox = {
+export type GetBoundingBoxReturn = SpanBoundingBox;
+
+export type SpanBoundingBox = {
   /** Distance from origin top to top of row, in % */
   topOffset: number;
   /** Distance from origin bottom to bottom of row, in % */
@@ -45,6 +43,4 @@ export type CalendarEventSpanBoundingBox = {
   rightOffset: number;
   /** The span size, in % */
   spanSizePct: number;
-  /** The span size of the entire event, in % */
-  totalEventSpanSize: number;
 };

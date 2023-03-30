@@ -1,1 +1,1 @@
-export * from "./src/dayjs";
+export * from "./dist/dayjs-adapter";

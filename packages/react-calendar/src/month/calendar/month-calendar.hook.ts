@@ -4,21 +4,20 @@ import {
   UseMonthCalendarReturn,
 } from "./month-calendar.types";
 import { useState } from "react";
-import { getEventSpans } from "./events/month-events.constants";
+import {
+  getBoundingBox,
+  getEventSpans,
+} from "../events/month-events.constants";
 
-export const useMonthCalendar = <T>(
-  args: UseMonthCalendarArgs<T>
-): UseMonthCalendarReturn => {
+export function useMonthCalendar(
+  args: UseMonthCalendarArgs
+): UseMonthCalendarReturn {
   const { adapter, defaultStart = new Date() } = args;
   const [focusDate, setFocusDate] = useState(defaultStart);
 
   const monthStart = adapter.getMonthStart(focusDate);
   const month = adapter.getMonth(monthStart);
   const weeks = splitMonthIntoWeeks(month);
-
-  const spans = args.events
-    ? getEventSpans({ adapter: args.adapter, events: args.events, weeks })
-    : [];
 
   const setDate: UseMonthCalendarReturn["setDate"] = (date) => {
     setFocusDate(date);
@@ -50,34 +49,33 @@ export const useMonthCalendar = <T>(
     return adapter.isWeekend(date);
   };
 
-  const getSpanBoundingBox: UseMonthCalendarReturn["getSpanBoundingBox"] = (
-    event
-  ) => {
+  const events: UseMonthCalendarReturn["events"] = (events) => {
     return {
-      topOffset: (event.coords.weekIndex / weeks.length) * 100,
-      bottomOffset: 100 - ((event.coords.weekIndex + 1) / weeks.length) * 100,
-      leftOffset: (event.coords.start.value / weeks[0].length) * 100,
-      rightOffset:
-        ((weeks[0].length - event.coords.start.value) / weeks[0].length) * 100,
-      spanSizePct:
-        ((event.coords.end.value - event.coords.start.value) /
-          weeks[0].length) *
-        100,
-      totalEventSpanSize: (event.coords.totalSpan / weeks[0].length) * 100,
+      ...getEventSpans({ adapter, events, weeks }),
+      getBoundingBox: (span) => getBoundingBox(span, weeks),
+      boxToWeekStyle: (box) => ({
+        left: `${box.leftOffset}`,
+        width: `${box.spanSizePct}%`,
+      }),
+      boxToMonthStyle: (box) => ({
+        top: `${box.topOffset}%`,
+        left: `${box.leftOffset}%`,
+        width: `${box.spanSizePct}%`,
+        position: "absolute",
+      }),
     };
   };
 
   return {
+    weeks,
     isBeforeToday,
     isInCurrentMonth,
     isToday,
     isWeekend,
     setDate,
     monthStart,
-    weeks,
-    getSpanBoundingBox,
-    spans,
     nextMonth,
     prevMonth,
+    events,
   };
-};
+}

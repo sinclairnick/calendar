@@ -1,1 +1,1 @@
-module.exports = require("./src/dayjs");
+module.exports = require("./dist/dayjs-adapter");

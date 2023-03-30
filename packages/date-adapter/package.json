@@ -2,18 +2,38 @@
   "name": "@calendar/date-adapter",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "dayjs-adapter.js",
+    "dayjs-adapter.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dayjs-adapter": {
+      "import": "./dist/dayjs-adapter.mjs",
+      "require": "./dist/dayjs-adapter.js",
+      "types": "./dist/dayjs-adapter.d.ts"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsup-node",
+    "dev": "tsup-node --watch",
+    "check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "dayjs": "^1.11.7",
-    "typescript": "^4.9.5"
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
   }
 }

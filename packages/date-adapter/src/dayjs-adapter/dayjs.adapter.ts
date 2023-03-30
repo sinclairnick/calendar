@@ -65,15 +65,15 @@ export const createDayjsAdapter = (dayjs: typeof _dayjs): DateAdapter => {
   };
 
   const isBeforeDay: DateAdapter["isBeforeDay"] = (date, testDate) => {
-    return dayjs(date).isBefore(testDate, "D");
+    return dayjs(date).isBefore(testDate, "day");
   };
 
   const isSameDay: DateAdapter["isSameDay"] = (date, testDate) => {
-    return dayjs(date).isSame(testDate, "D");
+    return dayjs(date).isSame(testDate, "day");
   };
 
   const isSameMonth: DateAdapter["isSameMonth"] = (date, testDate) => {
-    return dayjs(date).isSame(testDate, "M");
+    return dayjs(date).isSame(testDate, "month");
   };
 
   const isWeekend: DateAdapter["isWeekend"] = (date) => {
@@ -82,15 +82,15 @@ export const createDayjsAdapter = (dayjs: typeof _dayjs): DateAdapter => {
   };
 
   const diffDays: DateAdapter["diffDays"] = (dateFrom, dateTo) => {
-    return dayjs(dateFrom).diff(dateTo, "D", true);
+    return dayjs(dateFrom).diff(dateTo, "day", true);
   };
 
   const addMonth: DateAdapter["addMonth"] = (date, months = 1) => {
-    return dayjs(date).add(months, "M").toDate();
+    return dayjs(date).add(months, "month").toDate();
   };
 
   const subtractMonth: DateAdapter["subtractMonth"] = (date, months = 1) => {
-    return dayjs(date).subtract(months, "M").toDate();
+    return dayjs(date).subtract(months, "month").toDate();
   };
 
   return {

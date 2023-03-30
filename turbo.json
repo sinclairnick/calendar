@@ -9,6 +9,12 @@
     "lint": {
       "outputs": []
     },
+    "publish": {
+      "dependsOn": ["build"]
+    },
+    "check": {
+      "dependsOn": ["^build"]
+    },
     "dev": {
       "cache": false
     }

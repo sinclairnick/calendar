@@ -1,114 +1,116 @@
-import { DateAdapter } from "@calendar/date-adapter";
-import { SevenDays } from "src/types/calendar.types";
+import { SevenDays } from "../../types";
+import { GetBoundingBoxReturn } from "../../types/event.types";
 import {
-  CalendarEventInput,
-  CalendarEventSpanEnd,
-  CalendarEventSpanStart,
-} from "src/types/event.types";
-import { MonthCalendarEventSpan } from "../events/month-events.types";
+  GetEventSpansArgs,
+  GetEventSpansReturn,
+  GetSpansForEventArgs,
+  GetSpansForEventReturn,
+  MonthCalendarEventSpan,
+} from "../events/month-events.types";
+import groupBy from "lodash/groupBy";
 
-const getEventIndices = (
-  event: Pick<CalendarEventInput, "start" | "end">,
-  minDate: Date,
-  weekLength = 7,
-  adapter: DateAdapter
-) => {
-  // These can be negative
-  let _startIndex = Math.floor(adapter.diffDays(event.start, minDate));
-  let _endIndex = Math.ceil(adapter.diffDays(event.end, minDate));
+export const getEventSpans = <T>(
+  args: GetEventSpansArgs<T>
+): GetEventSpansReturn<T> => {
+  const { adapter, events, weeks } = args;
 
-  const boundedStartIndex = Math.max(_startIndex, 0);
-  const isEventStart = boundedStartIndex === _startIndex;
+  const spans: MonthCalendarEventSpan<T>[] = events.reduce(
+    (arr: MonthCalendarEventSpan<T>[], event, i) => {
+      const eventSpans = getSpansForEvent({ adapter, event, weeks });
+      const additional = eventSpans.map(
+        (coords): MonthCalendarEventSpan<T> => ({
+          eventIdx: i,
+          coords,
+          event,
+        })
+      );
 
-  const boundedEndIndex = Math.min(_endIndex, weekLength);
-  const isEventEnd = boundedEndIndex === _endIndex;
+      return [...arr, ...additional];
+    },
+    []
+  );
 
-  // Avoid negative zero
-  _startIndex = Math.max(_startIndex, 0);
-  _endIndex = Math.max(_endIndex, 0);
-
-  const isEntirelyInFuture = _startIndex > weekLength && _endIndex > weekLength;
-  const isEntirelyInPast = _startIndex < 0 && _endIndex < 0;
-  const hasNoDuration = _startIndex === _endIndex;
-
-  const isOutsideRange =
-    isEntirelyInFuture || isEntirelyInPast || hasNoDuration;
-  if (isOutsideRange) return;
-
-  // Bound start/end to [0,7)
-
-  const startIndex: CalendarEventSpanStart = {
-    value: boundedStartIndex,
-    isEventStart,
+  return {
+    groupByEvent() {
+      return Object.values(groupBy(spans, (s) => s.eventIdx));
+    },
+    groupByWeek() {
+      return Object.values(groupBy(spans, (s) => s.coords.weekIdx));
+    },
+    asList() {
+      return spans;
+    },
   };
-  const endIndex: CalendarEventSpanEnd = {
-    value: boundedEndIndex,
-    isEventEnd,
-  };
-  return { startIndex, endIndex, totalSpan: _endIndex - _startIndex };
 };
 
-export const getStackIndex = (
-  start: CalendarEventSpanStart,
-  prevInWeek: MonthCalendarEventSpan[]
-) => {
-  return prevInWeek.reduce((acc, val) => {
-    const prevStart = val.coords.start.value;
-    const prevEnd = val.coords.end.value;
-    const prevStackIndex = val.coords.stackIndex;
-    return acc + Number(prevStackIndex === acc && prevEnd > start.value);
-  }, 0);
+/** Get bounding box for span */
+export const getBoundingBox = <T>(
+  span: MonthCalendarEventSpan<T>,
+  weeks: SevenDays[]
+): GetBoundingBoxReturn => {
+  return {
+    topOffset: (span.coords.weekIdx / weeks.length) * 100,
+    bottomOffset: 100 - ((span.coords.weekIdx + 1) / weeks.length) * 100,
+    leftOffset: (span.coords.start.value / weeks[0].length) * 100,
+    rightOffset:
+      ((weeks[0].length - span.coords.start.value) / weeks[0].length) * 100,
+    spanSizePct:
+      ((span.coords.end.value - span.coords.start.value) / weeks[0].length) *
+      100,
+  };
 };
 
-export const getEventSpans = <
-  T extends CalendarEventInput = CalendarEventInput
->(args: {
-  weeks: SevenDays[];
-  events: T[];
-  adapter: DateAdapter;
-}): MonthCalendarEventSpan<T>[] => {
-  const { events, weeks } = args;
-  const spans: MonthCalendarEventSpan<T>[] = [];
-  const eventsSortedByStart = events
-    .map((x, i) => ({ event: x, index: i })) // Keep original index
-    .sort((a, b) => {
-      return a.event.start > b.event.start ? 1 : -1;
-    });
+export const boundIndices = (
+  inputs: [number, number],
+  bounds: [number, number]
+): [number, number] => {
+  const [start, end] = inputs;
+  const [boundStart, boundEnd] = bounds;
+
+  const boundedStart = Math.abs(
+    Math.max(Math.min(start, boundEnd), boundStart)
+  );
+  const boundedEnd = Math.abs(Math.max(Math.min(end, boundEnd), boundStart));
+
+  return [boundedStart, boundedEnd];
+};
+
+export const getSpansForEvent = <T>(
+  args: GetSpansForEventArgs<T>
+): GetSpansForEventReturn => {
+  const { adapter, event, weeks } = args;
+  const spans: GetSpansForEventReturn = [];
 
   for (const i in weeks) {
-    const index = Number(i);
-    const week = weeks[index];
-    const minDate = week[0];
+    const weekIdx = Number(i);
+    const week = weeks[weekIdx];
+    const weekStart = week[0];
 
-    const prevSpans: MonthCalendarEventSpan<T>[] = [];
+    // These can be negative
+    const diffStart = adapter.diffDays(event.start, weekStart);
+    const unboundedStartIdx = Math.floor(diffStart);
 
-    for (const eventIndex in eventsSortedByStart) {
-      const event = eventsSortedByStart[eventIndex];
-      const indices = getEventIndices(
-        event.event,
-        minDate,
-        week.length,
-        args.adapter
-      );
-      if (indices === undefined) continue;
+    const diffEnd = adapter.diffDays(event.end, weekStart);
+    const unboundedEndIdx = Math.ceil(diffEnd);
 
-      const { endIndex, startIndex, totalSpan } = indices;
+    const [boundedStartIdx, boundedEndIdx] = boundIndices(
+      [unboundedStartIdx, unboundedEndIdx],
+      [0, week.length]
+    );
 
-      const span: MonthCalendarEventSpan<T> = {
-        index: event.index,
-        data: event.event,
-        coords: {
-          end: endIndex,
-          start: startIndex,
-          weekIndex: index,
-          stackIndex: getStackIndex(startIndex, prevSpans),
-          totalSpan,
-        },
-      };
+    const isEventStart = boundedStartIdx === unboundedStartIdx;
+    const isEventEnd = boundedEndIdx === unboundedEndIdx;
 
-      spans.push(span);
-      prevSpans.push(span);
-    }
+    const isOutsideRange = boundedStartIdx === boundedEndIdx;
+    if (isOutsideRange) continue;
+
+    spans.push({
+      start: { value: boundedStartIdx, isEventStart },
+      end: { value: boundedEndIdx, isEventEnd },
+      totalSpan: unboundedEndIdx - unboundedStartIdx,
+      weekIdx: weekIdx,
+    });
   }
+
   return spans;
 };
